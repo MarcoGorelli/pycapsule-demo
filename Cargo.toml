@@ -1,0 +1,15 @@
+[package]
+name = "pycapsule-demo"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "pycapsule_demo"
+crate-type = ["cdylib"]
+
+[dependencies]
+arrow = "53.3.0"
+arrow-schema = "53.3.0"
+pyo3 = "0.23.1"
+pyo3-arrow = "0.6.0"
