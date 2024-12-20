@@ -9,6 +9,8 @@ use pyo3_arrow::PyArrayReader;
 #[pyfunction]
 fn sum_i64_column(values: PyArrayReader, column_name: String) -> PyArrowResult<i64> {
     let reader = values.into_reader()?;
+
+    // Validate input.
     let field = reader.field();
     let data_type = field.data_type();
     let mut found_column = false;
@@ -39,13 +41,32 @@ fn sum_i64_column(values: PyArrayReader, column_name: String) -> PyArrowResult<i
         },
     };
 
+    // Compute sum for each chunk.
     let mut total: i64 = 0;
     for array_result in reader {
         let array = array_result?;
         let struct_array = array.as_struct();
-        // We use `unwrap` as we've already validated that `column_name` is present.
-        let column = struct_array.column_by_name(&column_name).unwrap();
-        // Data type has already been validated.
+        let column = struct_array.column_by_name(&column_name).expect("column name already been validated");
+        let primitive_array: &Int64Array = column.as_primitive();
+        if let Some(sum) = compute::sum(primitive_array) {
+            total += sum;
+        };
+    }
+    Ok(total)
+}
+
+#[pyfunction]
+fn sum_i64_column_simple(values: PyArrayReader, column_name: String) -> PyArrowResult<i64> {
+    let reader = values.into_reader()?;
+
+    // Assume that input has already been validate on the Python side.
+
+    // Compute sum for each chunk.
+    let mut total: i64 = 0;
+    for array_result in reader {
+        let array = array_result?;
+        let struct_array = array.as_struct();
+        let column = struct_array.column_by_name(&column_name).expect("column name already been validated");
         let primitive_array: &Int64Array = column.as_primitive();
         if let Some(sum) = compute::sum(primitive_array) {
             total += sum;
@@ -57,6 +78,7 @@ fn sum_i64_column(values: PyArrayReader, column_name: String) -> PyArrowResult<i
 #[pymodule]
 fn pycapsule_demo(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sum_i64_column, m)?)?;
+    m.add_function(wrap_pyfunction!(sum_i64_column_simple, m)?)?;
     Ok(())
 }
 
