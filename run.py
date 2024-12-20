@@ -1,10 +1,10 @@
-from pycapsule_demo import sum_i64_column, sum_i64_column_simple
+import duckdb
+import narwhals as nw
 import pandas as pd
 import polars as pl
 import pyarrow.csv as pa_csv
-import duckdb
-import narwhals as nw
 from narwhals.typing import IntoFrame
+from pycapsule_demo import sum_i64_column, sum_i64_column_simple
 
 df_pl = pl.read_csv("data.csv")
 df_pd = pd.read_csv("data.csv")
