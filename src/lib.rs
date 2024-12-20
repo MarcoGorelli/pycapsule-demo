@@ -59,3 +59,4 @@ fn pycapsule_demo(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sum_i64_column, m)?)?;
     Ok(())
 }
+
