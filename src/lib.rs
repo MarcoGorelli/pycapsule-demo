@@ -1,18 +1,17 @@
-use arrow::{
-    array::{AsArray, Int64Array},
-    compute,
-    datatypes::DataType,
-};
+use arrow::array::{AsArray, Int64Array};
+use arrow::compute;
+use arrow::datatypes::DataType;
 use arrow_schema::ArrowError;
 use pyo3::prelude::*;
-use pyo3_arrow::error::PyArrowResult;
-use pyo3_arrow::{error::PyArrowError, PyArrayReader};
+use pyo3_arrow::error::{PyArrowError, PyArrowResult};
+use pyo3_arrow::PyArrayReader;
 
 #[pyfunction]
 fn sum_i64_column(values: PyArrayReader, column_name: String) -> PyArrowResult<i64> {
     let reader = values.into_reader()?;
     let field = reader.field();
     let data_type = field.data_type();
+    let mut found_column = false;
     match data_type {
         DataType::Struct(fields) => {
             for field in fields {
@@ -23,14 +22,21 @@ fn sum_i64_column(values: PyArrayReader, column_name: String) -> PyArrowResult<i
                             "Expected Int64, got {data_type}"
                         ))));
                     }
+                    found_column = true;
                     break;
                 }
+            }
+            if !found_column {
                 return Err(PyArrowError::from(ArrowError::ComputeError(format!(
                     "Column '{column_name}' not found"
                 ))));
             }
-        }
-        _ => (),
+        },
+        data_type => {
+            return Err(PyArrowError::from(ArrowError::ComputeError(format!(
+                "Expected Struct, got {data_type}"
+            ))));
+        },
     };
 
     let mut total: i64 = 0;
