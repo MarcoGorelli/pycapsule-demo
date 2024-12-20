@@ -1,7 +1,6 @@
 from pycapsule_demo import sum_i64_column, sum_i64_column_simple
 import pandas as pd
 import polars as pl
-import pyarrow as pa
 import pyarrow.csv as pa_csv
 import duckdb
 import narwhals as nw
