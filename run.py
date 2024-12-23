@@ -42,7 +42,7 @@ print()
 
 def agnostic_sum_i64_column_python(df_native: IntoFrame, column_name: str) -> int:
     df = nw.from_native(df_native)
-    schema = df.schema
+    schema = df.collect_schema()
     if column_name not in schema:
         msg = f"Column '{column_name}' not found, available columns are: {schema.names()}."
         raise ValueError(msg)
