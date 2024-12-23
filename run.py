@@ -21,8 +21,7 @@ print()
 
 def agnostic_sum_i64_column_rust(df_native: IntoFrame, column_name: str) -> int:
     df = nw.from_native(df_native)
-    # TODO: use .collect_schema, https://github.com/narwhals-dev/narwhals/issues/1628
-    schema = df.schema
+    schema = df.collect_schema()
     if column_name not in schema:
         msg = f"Column '{column_name}' not found, available columns are: {schema.names()}."
         raise ValueError(msg)
