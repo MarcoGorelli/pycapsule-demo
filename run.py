@@ -19,7 +19,7 @@ print("DuckDB result:", sum_i64_column(rel, column_name="a"))
 print()
 
 
-def agnostic_sum_i64_column_python(df_native: IntoFrame, column_name: str) -> int:
+def agnostic_sum_i64_column_narwhals(df_native: IntoFrame, column_name: str) -> int:
     lf = nw.from_native(df_native).lazy()
     schema = lf.collect_schema()
     if column_name not in schema:
@@ -33,9 +33,9 @@ def agnostic_sum_i64_column_python(df_native: IntoFrame, column_name: str) -> in
 
 
 print("***Narwhals solution***")
-print("Polars result:", agnostic_sum_i64_column_python(df_pl, column_name="a"))
-print("pandas result:", agnostic_sum_i64_column_python(df_pd, column_name="a"))
-print("PyArrow result:", agnostic_sum_i64_column_python(df_pa, column_name="a"))
+print("Polars result:", agnostic_sum_i64_column_narwhals(df_pl, column_name="a"))
+print("pandas result:", agnostic_sum_i64_column_narwhals(df_pd, column_name="a"))
+print("PyArrow result:", agnostic_sum_i64_column_narwhals(df_pa, column_name="a"))
 # Needs re-executing due to https://github.com/duckdb/duckdb/discussions/15536.
 rel = duckdb.sql("select * from data.csv")
-print("DuckDB result:", agnostic_sum_i64_column_python(rel, column_name="a"))
+print("DuckDB result:", agnostic_sum_i64_column_narwhals(rel, column_name="a"))
