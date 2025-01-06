@@ -32,7 +32,6 @@ def agnostic_sum_i64_column_python(df_native: IntoFrame, column_name: str) -> in
     return df[column_name].sum()
 
 
-
 print("***Narwhals solution***")
 print("Polars result:", agnostic_sum_i64_column_python(df_pl, column_name="a"))
 print("pandas result:", agnostic_sum_i64_column_python(df_pd, column_name="a"))
@@ -40,4 +39,3 @@ print("PyArrow result:", agnostic_sum_i64_column_python(df_pa, column_name="a"))
 # Needs re-executing due to https://github.com/duckdb/duckdb/discussions/15536.
 rel = duckdb.sql("select * from data.csv")
 print("DuckDB result:", agnostic_sum_i64_column_python(rel, column_name="a"))
-
