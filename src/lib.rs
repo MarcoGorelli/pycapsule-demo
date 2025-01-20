@@ -18,7 +18,7 @@ fn sum_i64_column(values: PyRecordBatchReader, column_name: String) -> PyArrowRe
                 "Column '{column_name}' not found"
             )))?;
 
-    if !matches!(field.data_type(), DataType::Int8) {
+    if !matches!(field.data_type(), DataType::Int64) {
         return Err(
             ArrowError::ComputeError(format!("Expected Int64, got {}", field.data_type())).into(),
         );
